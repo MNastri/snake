@@ -20,6 +20,8 @@ COLOR_PALETTE = {0: BLACK,
 
 GRID_ROWS = 3
 GRID_COLUMNS = 3
+CELL_WIDTH = WIDTH / GRID_COLUMNS
+CELL_HEIGHT = HEIGHT / GRID_ROWS
 
 
 class Board:
@@ -27,13 +29,21 @@ class Board:
         self.screen = screen
 
     def draw(self):
-        for rows in range(GRID_ROWS-1):
-            for columns in range(GRID_COLUMNS-1):
+        ww = CELL_WIDTH
+        hh = CELL_HEIGHT
+        for rows in range(1, GRID_ROWS):
+            for columns in range(1, GRID_COLUMNS):
                 pygame.draw.line(self.screen,
                                  GREEN,
-                                 (0, 0),
-                                 (100, 100),
-                                 100)
+                                 (rows * ww, 0),
+                                 (rows * ww, HEIGHT),
+                                 10)
+                pygame.draw.line(self.screen,
+                                 WHITE,
+                                 (0, columns * hh),
+                                 (WIDTH, columns * hh),
+                                 10)
+
 
 
 def main_loop():
@@ -52,7 +62,7 @@ def main_loop():
         board.draw()
         pygame.display.flip()
         color_number = (color_number + 1) % 4
-        time.sleep(3.0)
+        time.sleep(1.0)
 
 
 if __name__ == "__main__":
