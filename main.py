@@ -26,12 +26,12 @@ def main_loop():
     color_number = 0
     while running:
         for event in pygame.event.get():
-            if event == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 sys.exit()
         screen.fill(COLOR_PALETTE[color_number])
         pygame.display.flip()
         color_number = (color_number + 1) % 4
-        #time.sleep(3.0)
+        time.sleep(3.0)
 
 
 if __name__ == "__main__":
