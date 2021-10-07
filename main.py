@@ -33,17 +33,35 @@ class Board:
         hh = CELL_HEIGHT
         for rows in range(1, GRID_ROWS):
             for columns in range(1, GRID_COLUMNS):
+                xi = rows * ww
+                xe = xi
+                yi = 0
+                ye = HEIGHT
                 pygame.draw.line(self.screen,
                                  GREEN,
-                                 (rows * ww, 0),
-                                 (rows * ww, HEIGHT),
+                                 (xi, yi),
+                                 (xe, ye),
                                  10)
+                xi = 0
+                xe = WIDTH
+                yi = columns * hh
+                ye = yi
                 pygame.draw.line(self.screen,
                                  WHITE,
-                                 (0, columns * hh),
-                                 (WIDTH, columns * hh),
+                                 (xi, yi),
+                                 (xe, ye),
                                  10)
 
+    def fill_cell(self, row: int, column: int, color: tuple[int, int, int]) -> None:
+        # 0 based row and 0 based columns please
+        xi = column * CELL_WIDTH
+        xe = (column+1) * CELL_WIDTH
+        yi = row * CELL_HEIGHT
+        ye = (row+1) * CELL_HEIGHT
+        pygame.draw.rect(self.screen,
+                         BLACK,
+                         ((xi, yi),
+                          (xe, ye)),)
 
 
 def main_loop():
@@ -60,6 +78,7 @@ def main_loop():
                 sys.exit()
         screen.fill(COLOR_PALETTE[color_number])
         board.draw()
+        board.fill_cell(0,0,BLACK)
         pygame.display.flip()
         color_number = (color_number + 1) % 4
         time.sleep(1.0)
