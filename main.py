@@ -25,10 +25,10 @@ CELL_HEIGHT = HEIGHT / GRID_ROWS
 
 
 class Board:
-    def __init__(self, screen: Union[Surface, SurfaceType]):
+    def __init__(self, screen: Union[Surface, SurfaceType]) -> None:
         self.screen = screen
 
-    def draw(self):
+    def draw(self) -> None:
         ww = CELL_WIDTH
         hh = CELL_HEIGHT
         for rows in range(1, GRID_ROWS):
@@ -53,13 +53,13 @@ class Board:
                                  10)
 
     def fill_cell(self, row: int, column: int, color: tuple[int, int, int]) -> None:
-        # 0 based row and 0 based columns please
+        # 0 based row and columns please
         xi = column * CELL_WIDTH
         xe = (column+1) * CELL_WIDTH
         yi = row * CELL_HEIGHT
         ye = (row+1) * CELL_HEIGHT
         pygame.draw.rect(self.screen,
-                         BLACK,
+                         color,
                          ((xi, yi),
                           (xe, ye)),)
 
@@ -78,7 +78,7 @@ def main_loop():
                 sys.exit()
         screen.fill(COLOR_PALETTE[color_number])
         board.draw()
-        board.fill_cell(0,0,BLACK)
+        board.fill_cell(0, 0, BLACK)
         pygame.display.flip()
         color_number = (color_number + 1) % 4
         time.sleep(1.0)
