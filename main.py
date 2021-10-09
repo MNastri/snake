@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from typing import Union
+# from typing import Union
 
 
 BOARD_ROWS = 3
@@ -12,10 +12,10 @@ class Board:
         self.array = np.zeros((BOARD_ROWS, BOARD_COLUMNS), dtype=int)
         self.empty_cells = BOARD_ROWS * BOARD_COLUMNS
 
-    def find_empty_cell(self) -> Union[tuple[int, int], None]:
-        # find an empty cell and return its position as tuple
+    def find_empty_cell(self) -> tuple[int, int]:
+        # find an empty cell and return its position as tuple or an error
         if not self.empty_cells:
-            return
+            return -1, -1
         valid_cell = False
         row = column = None
         while not valid_cell:
@@ -33,10 +33,10 @@ def main_loop():
     random.seed(a=0)
     board = Board()
     print(board.array)
-    for _ in range(BOARD_ROWS * BOARD_COLUMNS):
+    for _ in range(BOARD_ROWS * BOARD_COLUMNS+1):
         rr, cc = board.find_empty_cell()
         print(f'{rr},{cc}')
-        board.array[rr][cc] = 1
+        board.set_cell(1, rr, cc)
         print(board.array)
 
 
