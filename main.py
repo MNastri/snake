@@ -13,6 +13,7 @@ class Board:
     def find_empty_cell(self) -> tuple[int, int]:
         # find an empty cell and return its position as tuple
         valid_cell = False
+        row = column = None
         while not valid_cell:
             row = random.randrange(BOARD_ROWS)
             column = random.randrange(BOARD_COLUMNS)
