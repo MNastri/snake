@@ -19,6 +19,9 @@ class Board:
             valid_cell = self.array[row][column] == 0
         return row, column
 
+    def set_cell(self, value: int, row: int, column: int) -> None:
+        self.array[row][column] = value
+
 
 def main_loop():
     random.seed(a=0)
