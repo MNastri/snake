@@ -2,7 +2,7 @@ import pygame
 import sys
 from typing import Union
 from pygame import Surface, SurfaceType
-from numpy import ndarray
+# from numpy import ndarray
 import time
 import numpy as np
 import random
@@ -25,6 +25,7 @@ GRID_ROWS = 3
 GRID_COLUMNS = 3
 CELL_WIDTH = WIDTH / GRID_COLUMNS
 CELL_HEIGHT = HEIGHT / GRID_ROWS
+LINE_WIDTH = 1
 
 
 class Board:
@@ -37,40 +38,40 @@ class Board:
         return str(self.array)
 
     def draw_grid(self) -> None:
+        # TODO remove this method. a grid is not necessary if you fill the cells correctly
         ww = CELL_WIDTH
         hh = CELL_HEIGHT
         purple_color = (151, 119, 161)
-        for rows in range(1, GRID_ROWS):
-            for columns in range(1, GRID_COLUMNS):
+        for rows in range(0, GRID_ROWS+1):
+            for columns in range(0, GRID_COLUMNS+1):
                 xi = rows * ww
-                xe = xi
                 yi = 0
+                xe = xi
                 ye = HEIGHT
-                pygame.draw.line(self.screen,
-                                 purple_color,
-                                 (xi, yi),
-                                 (xe, ye),
-                                 10)
+                pygame.draw.line(self.screen, purple_color, (xi, yi), (xe, ye), LINE_WIDTH)
+                pygame.display.flip()
+                time.sleep(0.16/9)
                 xi = 0
-                xe = WIDTH
                 yi = columns * hh
+                xe = WIDTH
                 ye = yi
-                pygame.draw.line(self.screen,
-                                 purple_color,
-                                 (xi, yi),
-                                 (xe, ye),
-                                 10)
+                pygame.draw.line(self.screen, purple_color, (xi, yi), (xe, ye), LINE_WIDTH)
+                pygame.display.flip()
+                time.sleep(0.16/9)
 
     def fill_cell(self, row: int, column: int, color: tuple[int, int, int]) -> None:
         # 0 based row and columns please
-        xi = column * CELL_WIDTH
-        xe = (column+1) * CELL_WIDTH
-        yi = row * CELL_HEIGHT
-        ye = (row+1) * CELL_HEIGHT
+        lw = LINE_WIDTH
+        cw = CELL_WIDTH
+        ch = CELL_HEIGHT
+
+        xi = column * cw + lw
+        yi = row * ch + lw
+        ww = cw - 2*lw
+        hh = ch - 2*lw
         pygame.draw.rect(self.screen,
                          color,
-                         ((xi, yi),
-                          (xe, ye)))
+                         (xi, yi, ww, hh))
 
     def draw_cells(self):
         for rr in range(GRID_ROWS):
@@ -103,26 +104,20 @@ def main_loop():
     board = Board(screen)
 
     random.seed(a=0)  # removes randomness
-    print(board)
-    for _ in range(GRID_ROWS * GRID_COLUMNS + 1):
-        rr, cc = board.find_empty_cell()
-        print(f'{rr},{cc}')
-        board.set_cell(1, rr, cc)
-        print(board)
 
-    board.draw_grid()
     running = True
     # color_number = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        # screen.fill(COLOR_PALETTE[color_number])
-        # board.draw_grid()
-        # board.fill_cell(0, 0, BLACK)
+        board.draw_grid()
+        rr, cc = board.find_empty_cell()
+        board.set_cell(2, rr, cc)
+        print(board)
+        board.draw_cells()
         pygame.display.flip()
-        # color_number = (color_number + 1) % 4
-        # time.sleep(1.0)
+        time.sleep(0.66)
 
 
 if __name__ == "__main__":
