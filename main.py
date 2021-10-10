@@ -39,28 +39,6 @@ class Board:
     def __str__(self) -> str:
         return str(self.array)
 
-    def draw_grid(self) -> None:
-        # TODO remove this method. a grid is not necessary if you fill the cells correctly
-        ww = CELL_WIDTH
-        hh = CELL_HEIGHT
-        purple_color = (151, 119, 161)
-        for rows in range(0, GRID_ROWS+1):
-            for columns in range(0, GRID_COLUMNS+1):
-                xi = rows * ww
-                yi = 0
-                xe = xi
-                ye = HEIGHT
-                pygame.draw.line(self.screen, purple_color, (xi, yi), (xe, ye), LINE_WIDTH)
-                pygame.display.flip()
-                time.sleep(0.16/9)
-                xi = 0
-                yi = columns * hh
-                xe = WIDTH
-                ye = yi
-                pygame.draw.line(self.screen, purple_color, (xi, yi), (xe, ye), LINE_WIDTH)
-                pygame.display.flip()
-                time.sleep(0.16/9)
-
     def fill_cell(self, row: int, column: int, color: tuple[int, int, int]) -> None:
         # 0 based row and columns please
         lw = LINE_WIDTH
