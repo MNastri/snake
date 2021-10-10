@@ -1,3 +1,4 @@
+import os  # TODO remove this.
 import pygame
 import sys
 from typing import Union
@@ -49,6 +50,7 @@ class Board:
         self.screen = screen
         self.array = np.zeros((GRID_ROWS, GRID_COLUMNS), dtype=int)
         self.empty_cells = GRID_ROWS * GRID_COLUMNS
+        self.is_full = False
 
     def __str__(self) -> str:
         return str(self.array)
@@ -59,10 +61,10 @@ class Board:
         cw = CELL_WIDTH
         ch = CELL_HEIGHT
 
-        xi = column * cw + lw
-        yi = row * ch + lw
-        ww = cw - 2*lw
-        hh = ch - 2*lw
+        xi = int(column * cw + lw)
+        yi = int(row * ch + lw)
+        ww = int(cw - 2*lw)
+        hh = int(ch - 2*lw)
         pygame.draw.rect(self.screen,
                          color,
                          (xi, yi, ww, hh))
@@ -75,7 +77,7 @@ class Board:
 
     def find_empty_cell(self) -> tuple[int, int]:
         # find an empty cell and return its position as tuple or an error code
-        if not self.empty_cells:
+        if not self.is_full:
             return -1, -1
         valid_cell = False
         row = column = None
@@ -87,29 +89,36 @@ class Board:
 
     def set_cell(self, value: int, row: int, column: int) -> None:
         self.empty_cells -= 1 if self.array[row][column] == 0 else 0
+        if self.empty_cells == 0:
+            self.is_full = True
         self.array[row][column] = value
+
+    def replace_apple(self):
+        rr, cc = self.find_empty_cell()
+        self.set_cell(2, rr, cc)
 
 
 def main_loop():
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)  # TODO remove this. This sets the screen position
+    random.seed(a=0)  # TODO remove this. This removes randomness
+
     pygame.init()
     pygame.display.set_caption('Snake')
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.fill(PURPLE)
     board = Board(screen)
 
-    random.seed(a=0)  # removes randomness
 
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        rr, cc = board.find_empty_cell()
-        board.set_cell(2, rr, cc)
+        board.replace_apple()
         print(board)
         board.draw_cells()
         pygame.display.flip()
-        time.sleep(2.0/6.0)
+        time.sleep(6.0/6.0)
 
 
 if __name__ == "__main__":
