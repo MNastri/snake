@@ -2,6 +2,7 @@ import pygame
 import sys
 from typing import Union
 from pygame import Surface, SurfaceType
+from numpy import ndarray
 import time
 import numpy as np
 import random
@@ -32,9 +33,13 @@ class Board:
         self.array = np.zeros((GRID_ROWS, GRID_COLUMNS), dtype=int)
         self.empty_cells = GRID_ROWS * GRID_COLUMNS
 
-    def draw(self) -> None:
+    def __str__(self) -> str:
+        return str(self.array)
+
+    def draw_grid(self) -> None:
         ww = CELL_WIDTH
         hh = CELL_HEIGHT
+        purple_color = (151, 119, 161)
         for rows in range(1, GRID_ROWS):
             for columns in range(1, GRID_COLUMNS):
                 xi = rows * ww
@@ -42,7 +47,7 @@ class Board:
                 yi = 0
                 ye = HEIGHT
                 pygame.draw.line(self.screen,
-                                 GREEN,
+                                 purple_color,
                                  (xi, yi),
                                  (xe, ye),
                                  10)
@@ -51,7 +56,7 @@ class Board:
                 yi = columns * hh
                 ye = yi
                 pygame.draw.line(self.screen,
-                                 WHITE,
+                                 purple_color,
                                  (xi, yi),
                                  (xe, ye),
                                  10)
@@ -65,10 +70,16 @@ class Board:
         pygame.draw.rect(self.screen,
                          color,
                          ((xi, yi),
-                          (xe, ye)),)
+                          (xe, ye)))
+
+    def draw_cells(self):
+        for rr in range(GRID_ROWS):
+            for cc in range(GRID_COLUMNS):
+                color_number = self.array[rr][cc]
+                self.fill_cell(rr, cc, COLOR_PALETTE[color_number])
 
     def find_empty_cell(self) -> tuple[int, int]:
-        # find an empty cell and return its position as tuple or an error
+        # find an empty cell and return its position as tuple or an error code
         if not self.empty_cells:
             return -1, -1
         valid_cell = False
@@ -88,29 +99,30 @@ def main_loop():
     pygame.init()
     pygame.display.set_caption('Snake')
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(WHITE)
+    screen.fill(BLACK)
     board = Board(screen)
 
-    random.seed(a=0)
-    print(board.array)
+    random.seed(a=0)  # removes randomness
+    print(board)
     for _ in range(GRID_ROWS * GRID_COLUMNS + 1):
         rr, cc = board.find_empty_cell()
         print(f'{rr},{cc}')
         board.set_cell(1, rr, cc)
-        print(board.array)
+        print(board)
 
+    board.draw_grid()
     running = True
-    color_number = 0
+    # color_number = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        screen.fill(COLOR_PALETTE[color_number])
-        board.draw()
-        board.fill_cell(0, 0, BLACK)
+        # screen.fill(COLOR_PALETTE[color_number])
+        # board.draw_grid()
+        # board.fill_cell(0, 0, BLACK)
         pygame.display.flip()
-        color_number = (color_number + 1) % 4
-        time.sleep(1.0)
+        # color_number = (color_number + 1) % 4
+        # time.sleep(1.0)
 
 
 if __name__ == "__main__":
