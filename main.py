@@ -85,8 +85,13 @@ class Board:
 
 
 def main_loop():
+    pygame.init()
+    pygame.display.set_caption('Snake')
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen.fill(WHITE)
+    board = Board(screen)
+
     random.seed(a=0)
-    board = Board()
     print(board.array)
     for _ in range(GRID_ROWS * GRID_COLUMNS + 1):
         rr, cc = board.find_empty_cell()
@@ -94,11 +99,6 @@ def main_loop():
         board.set_cell(1, rr, cc)
         print(board.array)
 
-    pygame.init()
-    pygame.display.set_caption('Snake')
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(WHITE)
-    board = Board(screen)
     running = True
     color_number = 0
     while running:
