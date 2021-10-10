@@ -30,6 +30,20 @@ CELL_HEIGHT = HEIGHT / GRID_ROWS
 LINE_WIDTH = 1
 
 
+class Snake:
+    def __init__(self, position: tuple[int, int]):
+        self.pos = position
+        self.size = 1
+        # direction = (x, y)
+        #      ▲-y
+        #      │
+        # -x◄──┼──►+x
+        #      │
+        #      ▼+y
+        self.direction = (1, 0)
+    pass
+
+
 class Board:
     def __init__(self, screen: Union[Surface, SurfaceType]) -> None:
         self.screen = screen
