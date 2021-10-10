@@ -14,12 +14,14 @@ HEIGHT = 600
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+PURPLE = (255, 0, 255)
 WHITE = (255, 255, 255)
 
 COLOR_PALETTE = {0: BLACK,
                  1: GREEN,
                  2: RED,
-                 3: WHITE}
+                 3: PURPLE,
+                 4: WHITE}
 
 GRID_ROWS = 3
 GRID_COLUMNS = 3
@@ -100,24 +102,22 @@ def main_loop():
     pygame.init()
     pygame.display.set_caption('Snake')
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(BLACK)
+    screen.fill(PURPLE)
     board = Board(screen)
 
     random.seed(a=0)  # removes randomness
 
     running = True
-    # color_number = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        board.draw_grid()
         rr, cc = board.find_empty_cell()
         board.set_cell(2, rr, cc)
         print(board)
         board.draw_cells()
         pygame.display.flip()
-        time.sleep(0.66)
+        time.sleep(2.0/6.0)
 
 
 if __name__ == "__main__":
