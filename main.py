@@ -59,6 +59,7 @@ class Snake:
             self.direction[0] = 1 if d == 0 else -1 if d == 2 else 0
             self.direction[1] = 1 if d == 3 else -1 if d == 1 else 0
 
+
 class Board:
     def __init__(self, screen: Union[Surface, SurfaceType]) -> None:
         self.screen = screen
@@ -116,28 +117,34 @@ class Board:
         self.set_cell(2, rr, cc)
 
 
+class Game:
+    def __init__(self):
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 32)  # TODO maybe remove this. This sets the screen position
+        random.seed(a=0)  # TODO remove this. This removes randomness
+        pygame.init()
+        pygame.display.set_caption('Snake')
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen.fill(PURPLE)
+        self.board = Board(self.screen)
+        self.snake = Snake(0, 0)
+
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+            self.board.set_cell(1, self.snake.posx, self.snake.posy)
+            self.board.replace_apple()
+            print(self.board)
+            self.board.draw_cells()
+            pygame.display.flip()
+            time.sleep(3.0/6.0)
+
+
 def main_loop():
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 32)  # TODO maybe remove this. This sets the screen position
-    random.seed(a=0)  # TODO remove this. This removes randomness
-
-    pygame.init()
-    pygame.display.set_caption('Snake')
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(PURPLE)
-    board = Board(screen)
-    snake = Snake(0, 0)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-        board.set_cell(1, snake.posx, snake.posy)
-        board.replace_apple()
-        print(board)
-        board.draw_cells()
-        pygame.display.flip()
-        time.sleep(3.0/6.0)
+    game = Game()
+    game.run()
 
 
 if __name__ == "__main__":
