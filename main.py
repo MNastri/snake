@@ -32,7 +32,7 @@ LINE_WIDTH = 1
 
 
 class Snake:
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int) -> None:
         self.posx = x
         self.posy = y
         self.size = 1
@@ -42,12 +42,22 @@ class Snake:
         # -x◄──┼──►+x
         #      │
         #      ▼+y
-        self.direction = (1, 0)
+        self.direction = [1, 0]
 
-    def move(self):
+    def move(self) -> None:
         self.posx += self.direction[0]
         self.posy += self.direction[1]
 
+    def change_direction(self, d: int) -> None:
+        # direction
+        #      ▲1
+        #      │
+        #  2◄──┼──►0
+        #      │
+        #      ▼3
+        if (d % 2 == 1 and self.direction[0] % 2 == 0) or (d % 2 == 0 and self.direction[0] % 2 == 1):
+            self.direction[0] = 1 if d == 0 else -1 if d == 2 else 0
+            self.direction[1] = 1 if d == 3 else -1 if d == 1 else 0
 
 class Board:
     def __init__(self, screen: Union[Surface, SurfaceType]) -> None:
