@@ -44,9 +44,13 @@ class Snake:
         #      ▼+y
         self.direction = [1, 0]
 
-    def move(self) -> None:
+    def move(self) -> bool:
+        died = False
         self.posx += self.direction[0]
         self.posy += self.direction[1]
+        if posx == GRID_COLUMNS or posy == GRID_ROWS:
+            died = True
+        return died
 
     def change_direction(self, d: int) -> None:
         # direction
@@ -134,12 +138,14 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+
+
             self.board.set_cell(1, self.snake.posx, self.snake.posy)
             self.board.replace_apple()
             print(self.board)
             self.board.draw_cells()
             pygame.display.flip()
-            time.sleep(3.0/6.0)
+            time.sleep(3.0/6.0)  # TODO better interval management
 
 
 def main_loop():
