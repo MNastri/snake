@@ -43,14 +43,13 @@ class Snake:
         #      │
         #      ▼+y
         self.direction = [1, 0]
+        self.is_alive = True
 
-    def move(self) -> bool:
-        died = False
+    def move(self) -> None:
         self.posx += self.direction[0]
         self.posy += self.direction[1]
-        if posx == GRID_COLUMNS or posy == GRID_ROWS:
-            died = True
-        return died
+        if self.posx == GRID_COLUMNS or self.posy == GRID_ROWS:
+            self.is_alive = False
 
     def change_direction(self, d: int) -> None:
         # direction
@@ -120,6 +119,14 @@ class Board:
         rr, cc = self.find_empty_cell()
         self.set_cell(2, rr, cc)
 
+    def update_snake(self, row: int, column: int) -> None:
+        for rr in range(GRID_ROWS):
+            for cc in range(GRID_COLUMNS):
+                if self.array[rr][cc] == 1:
+                    self.set_cell(1, rr, cc)
+        self.set_cell(1, row, column)
+
+
 
 class Game:
     def __init__(self):
@@ -131,6 +138,8 @@ class Game:
         self.screen.fill(PURPLE)
         self.board = Board(self.screen)
         self.snake = Snake(0, 0)
+        self.board.set_cell(1, self.snake.posx, self.snake.posy)
+        self.board.replace_apple()
 
     def run(self):
         running = True
@@ -138,14 +147,13 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-
-
-            self.board.set_cell(1, self.snake.posx, self.snake.posy)
-            self.board.replace_apple()
+            self.snake.move()
+            self.board.array
+            # self.board.replace_apple()
             print(self.board)
             self.board.draw_cells()
             pygame.display.flip()
-            time.sleep(3.0/6.0)  # TODO better interval management
+            time.sleep(20.0/60.0)  # TODO better interval management
 
 
 def main_loop():
