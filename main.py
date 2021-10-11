@@ -43,7 +43,10 @@ class Snake:
         #      │
         #      ▼+y
         self.direction = (1, 0)
-    pass
+
+    def move(self):
+        self.posx += self.direction[0]
+        self.posy += self.direction[1]
 
 
 class Board:
@@ -104,7 +107,7 @@ class Board:
 
 
 def main_loop():
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)  # TODO maybe remove this. This sets the screen position
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 32)  # TODO maybe remove this. This sets the screen position
     random.seed(a=0)  # TODO remove this. This removes randomness
 
     pygame.init()
@@ -112,7 +115,7 @@ def main_loop():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.fill(PURPLE)
     board = Board(screen)
-    snake = Snake(0,0)
+    snake = Snake(0, 0)
 
     running = True
     while running:
