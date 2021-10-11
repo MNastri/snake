@@ -32,8 +32,9 @@ LINE_WIDTH = 1
 
 
 class Snake:
-    def __init__(self, position: tuple[int, int]):
-        self.pos = position
+    def __init__(self, x: int, y: int):
+        self.posx = x
+        self.posy = y
         self.size = 1
         # direction = (x, y)
         #      ▲-y
@@ -77,7 +78,7 @@ class Board:
 
     def find_empty_cell(self) -> tuple[int, int]:
         # find an empty cell and return its position as tuple or an error code
-        if not self.is_full:
+        if self.is_full:
             return -1, -1
         valid_cell = False
         row = column = None
@@ -88,6 +89,10 @@ class Board:
         return row, column
 
     def set_cell(self, value: int, row: int, column: int) -> None:
+        # TODO maybe remove this. this checks if the cell is valid
+        if row == -1:
+            print("invalid cell")
+            return
         self.empty_cells -= 1 if self.array[row][column] == 0 else 0
         if self.empty_cells == 0:
             self.is_full = True
@@ -99,7 +104,7 @@ class Board:
 
 
 def main_loop():
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)  # TODO remove this. This sets the screen position
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)  # TODO maybe remove this. This sets the screen position
     random.seed(a=0)  # TODO remove this. This removes randomness
 
     pygame.init()
@@ -107,18 +112,19 @@ def main_loop():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.fill(PURPLE)
     board = Board(screen)
-
+    snake = Snake(0,0)
 
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        board.set_cell(1, snake.posx, snake.posy)
         board.replace_apple()
         print(board)
         board.draw_cells()
         pygame.display.flip()
-        time.sleep(6.0/6.0)
+        time.sleep(3.0/6.0)
 
 
 if __name__ == "__main__":
