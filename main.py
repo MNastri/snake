@@ -138,7 +138,7 @@ class Game:
         self.screen.fill(PURPLE)
         self.board = Board(self.screen)
         self.snake = Snake(0, 0)
-        self.board.set_cell(1, self.snake.posx, self.snake.posy)
+        self.board.set_cell(1, self.snake.posy, self.snake.posx)
         self.board.replace_apple()
 
     def run(self):
@@ -147,14 +147,16 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-            self.snake.move()
-            self.board.array
-            # self.board.replace_apple()
             print(self.board)
             self.board.draw_cells()
+            time.sleep(60.0/60.0)  # TODO better interval management
+            self.snake.move()
+            self.board.update_snake(self.snake.posy, self.snake.posx)
+            # TODO fix this. crashes before showing the last snake position (0,2)
+            if not self.snake.is_alive:
+                running = False
+                time.sleep(3)
             pygame.display.flip()
-            time.sleep(20.0/60.0)  # TODO better interval management
-
 
 def main_loop():
     game = Game()
