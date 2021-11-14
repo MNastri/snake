@@ -54,14 +54,21 @@ class Snake:
         self.size = 1  # Todo probably should change this
         self.is_alive = True
 
-    def move(self) -> None:
-        self.posx += self.direction[0]
-        self.posy += self.direction[1]
-        if self.posx == GRID_COLUMNS or self.posy == GRID_ROWS:
+    def check_if_died(self):
+        """ Checks if snake died. """
+        if self.pos_x == GRID_COLUMNS or self.pos_y == GRID_ROWS:
             self.is_alive = False
+        # TODO improve
+        pass
 
-    def change_direction(self, d: int) -> None:
-        # direction
+    def move(self) -> None:
+        """ Move the snake. """
+        self.pos_x += self.velocity[0]
+        self.pos_y += self.velocity[1]
+        self.check_if_died()
+
+    def change_direction(self, new_direction: int) -> None:
+        # new_direction
         #      ▲1
         #      │
         #  2◄──┼──►0
