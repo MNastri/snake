@@ -32,6 +32,7 @@ LINE_WIDTH = 1
 
 
 class Snake:
+    """ Snake, snake, snake. """
     def __init__(self, x: int, y: int) -> None:
         self.posx = x
         self.posy = y
@@ -127,7 +128,6 @@ class Board:
         self.set_cell(1, row, column)
 
 
-
 class Game:
     def __init__(self):
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 32)  # TODO maybe remove this. This sets the screen position
@@ -157,6 +157,7 @@ class Game:
                 running = False
                 time.sleep(3)
             pygame.display.flip()
+
 
 def main_loop():
     game = Game()
