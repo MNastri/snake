@@ -67,6 +67,14 @@ class Snake:
         self.pos_y += self.velocity[1]
         self.check_if_died()
 
+    def change_velocity(self):
+        """ Change the snake's velocity. """
+        # (1 if "going positive direction in x axis" else -1) * ("going right or left")
+        self.velocity[0] = (1 if self.direction//2 == 0 else -1)*(self.direction % 2 == 0)
+
+        # (1 if "going positive direction in y axis" else -1) * ("going up or down")
+        self.velocity[1] = (1 if self.direction//2 == 1 else -1)*(self.direction % 2 == 1)
+
     def change_direction(self, new_direction: int) -> None:
         # new_direction
         #      ▲1
