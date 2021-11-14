@@ -82,9 +82,12 @@ class Snake:
         #  2◄──┼──►0
         #      │
         #      ▼3
-        if (d % 2 == 1 and self.direction[0] % 2 == 0) or (d % 2 == 0 and self.direction[0] % 2 == 1):
-            self.direction[0] = 1 if d == 0 else -1 if d == 2 else 0
-            self.direction[1] = 1 if d == 3 else -1 if d == 1 else 0
+        if (new_direction == 0 and self.direction == 2) or \
+           (new_direction == 1 and self.direction == 3) or \
+           (new_direction == 2 and self.direction == 0) or \
+           (new_direction == 3 and self.direction == 1):
+            return
+        self.direction = new_direction
 
 
 class Board:
