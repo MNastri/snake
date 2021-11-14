@@ -34,16 +34,24 @@ LINE_WIDTH = 1
 class Snake:
     """ Snake, snake, snake. """
     def __init__(self, x: int, y: int) -> None:
-        self.posx = x
-        self.posy = y
-        self.size = 1
-        # direction = (x, y)
+        """ Constructor for class Snake. """
+        self.pos_x = x  # Column
+        self.pos_y = y  # Row
+        # velocity = [x, y]
         #      ▲-y
         #      │
         # -x◄──┼──►+x
         #      │
         #      ▼+y
-        self.direction = [1, 0]
+        self.velocity = [1, 0]  # ["going 1 right", "going 0 down"]
+        # direction
+        #      ▲1
+        #      │
+        #  2◄──┼──►0
+        #      │
+        #      ▼3
+        self.direction = 0
+        self.size = 1  # Todo probably should change this
         self.is_alive = True
 
     def move(self) -> None:
@@ -138,7 +146,7 @@ class Game:
         self.screen.fill(PURPLE)
         self.board = Board(self.screen)
         self.snake = Snake(0, 0)
-        self.board.set_cell(1, self.snake.posy, self.snake.posx)
+        self.board.set_cell(1, self.snake.pos_y, self.snake.pos_x)
         self.board.replace_apple()
 
     def run(self):
@@ -151,7 +159,7 @@ class Game:
             self.board.draw_cells()
             time.sleep(60.0/60.0)  # TODO better interval management
             self.snake.move()
-            self.board.update_snake(self.snake.posy, self.snake.posx)
+            self.board.update_snake(self.snake.pos_y, self.snake.pos_x)
             # TODO fix this. crashes before showing the last snake position (0,2)
             if not self.snake.is_alive:
                 running = False
