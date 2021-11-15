@@ -1,7 +1,9 @@
 import os  # TODO remove this.
 import pygame
 import sys
-from typing import Union
+from typing import Union, List
+position = List[int, int]
+positions = List[position, ...]
 from pygame import Surface, SurfaceType
 # from numpy import ndarray
 import time
@@ -30,13 +32,20 @@ CELL_WIDTH = WIDTH / GRID_COLUMNS
 CELL_HEIGHT = HEIGHT / GRID_ROWS
 LINE_WIDTH = 1
 
+# TENTATIVA...
+class SnakeBody:
+    def __init__(self, pos_x: int, pos_y: int):
+        """ Constructor for SnakeBody. """
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+
 
 class Snake:
     """ Snake, snake, snake. """
     def __init__(self, x: int, y: int) -> None:
         """ Constructor for class Snake. """
-        self.pos_x = x  # Column
-        self.pos_y = y  # Row
+        self.head_pos_x = x  # Column
+        self.head_pos_y = y  # Row
         # velocity = [x, y]
         #      ▲-y
         #      │
@@ -53,18 +62,35 @@ class Snake:
         self.direction = 0
         self.size = 1  # Todo probably should change this
         self.is_alive = True
+        self.tail_pieces = [[None, None]]
 
     def check_if_died(self):
         """ Checks if snake died. """
-        if self.pos_x == GRID_COLUMNS or self.pos_y == GRID_ROWS:
-            self.is_alive = False
-        # TODO improve
-        pass
+        self.is_alive = False
+
+        # Change to its next position
+        # new_head_pos_x = self.head_pos_x + self.velocity[0]
+        # new_head_pos_y = self.head_pos_y + self.velocity[1]
+
+        # Check if hit the walls
+        if self.head_pos_x == GRID_COLUMNS or \
+           self.head_pos_y == GRID_ROWS or \
+           self.head_pos_x == -1 or \
+           self.head_pos_y == -1:
+            return
+        # TODO check collision with its tail
+        head_piece = [self.head_pos_x, self.head_pos_y]  # TODO need to check if this is correct (i think so) or if the correct is [[head_x, head_y]]
+        for tail_piece in self.tail_pieces:
+            if head_piece == tail_piece:
+                return
+
+        # if didn't meet any death condition, it's alive
+        self.is_alive = True
 
     def move(self) -> None:
         """ Move the snake. """
-        self.pos_x += self.velocity[0]
-        self.pos_y += self.velocity[1]
+        self.head_pos_x += self.velocity[0]
+        self.head_pos_y += self.velocity[1]
         self.check_if_died()
 
     def change_velocity(self):
@@ -88,14 +114,29 @@ class Snake:
            (new_direction == 3 and self.direction == 1):
             return
         self.direction = new_direction
+        self.change_velocity()
+
+    def get_snake_pos(self):
+        """ Returns an array with the snake pieces' position """
+        head_piece = [self.head_pos_x, self.head_pos_y]
+        snake_pieces = [head_piece]
+        snake_pieces.extend(self.tail_pieces)
+        print(f"snake_pieces={snake_pieces}")  # TODO removeeee
+        return snake_pieces
+
+    def add_tail_piece(self):
+        """ Adds another tail piece into the snake. """
+        pass
+
 
 
 class Board:
     def __init__(self, screen: Union[Surface, SurfaceType]) -> None:
         self.screen = screen
         self.array = np.zeros((GRID_ROWS, GRID_COLUMNS), dtype=int)
-        self.empty_cells = GRID_ROWS * GRID_COLUMNS
+        self.number_empty_cells = GRID_ROWS * GRID_COLUMNS
         self.is_full = False
+        self.apple_pos = [None, None]
 
     def __str__(self) -> str:
         return str(self.array)
@@ -132,26 +173,25 @@ class Board:
             valid_cell = self.array[row][column] == 0
         return row, column
 
-    def set_cell(self, value: int, row: int, column: int) -> None:
-        # TODO maybe remove this. this checks if the cell is valid
-        if row == -1:
-            print("invalid cell")
-            return
-        self.empty_cells -= 1 if self.array[row][column] == 0 else 0
-        if self.empty_cells == 0:
+    def set_cell(self, value: int, cell_row: int, cell_column: int) -> None:
+        self.number_empty_cells -= 1 if self.array[cell_row][cell_column] == 0 else 0
+        if self.number_empty_cells == 0:
             self.is_full = True
-        self.array[row][column] = value
+        self.array[cell_row][cell_column] = value
 
     def replace_apple(self):
         rr, cc = self.find_empty_cell()
+        self.apple_pos = [rr, cc]
         self.set_cell(2, rr, cc)
 
-    def update_snake(self, row: int, column: int) -> None:
+    def update_snake(self, snake_positions: positions) -> None:
         for rr in range(GRID_ROWS):
             for cc in range(GRID_COLUMNS):
                 if self.array[rr][cc] == 1:
-                    self.set_cell(1, rr, cc)
-        self.set_cell(1, row, column)
+                    self.set_cell(0, rr, cc)
+
+        for position in snake_positions:
+            self.set_cell(1, position[0], position[1])
 
 
 class Game:
@@ -164,7 +204,7 @@ class Game:
         self.screen.fill(PURPLE)
         self.board = Board(self.screen)
         self.snake = Snake(0, 0)
-        self.board.set_cell(1, self.snake.pos_y, self.snake.pos_x)
+        self.board.set_cell(1, self.snake.head_pos_y, self.snake.head_pos_x)
         self.board.replace_apple()
 
     def run(self):
@@ -172,13 +212,15 @@ class Game:
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    running = False
             print(self.board)
             self.board.draw_cells()
-            time.sleep(60.0/60.0)  # TODO better interval management
+            time.sleep(120.0/60.0)  # TODO better interval management
             self.snake.move()
-            self.board.update_snake(self.snake.pos_y, self.snake.pos_x)
-            # TODO fix this. crashes before showing the last snake position (0,2)
+            snake_positions = self.snake.get_snake_pos()
+
+            self.board.update_snake(snake_positions)
+
             if not self.snake.is_alive:
                 running = False
                 time.sleep(3)
@@ -188,6 +230,7 @@ class Game:
 def main_loop():
     game = Game()
     game.run()
+    sys.exit()
 
 
 if __name__ == "__main__":
